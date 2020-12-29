@@ -97,14 +97,14 @@ def main(argv):
         model.learn(total_timesteps=total_timesteps, env_eval=eval_env, score_path=rew_eval_file, dis_path=dis_eval_file,
                     log_interval=1, seed=seed, path=file_name)
 
-    if FLAGS.model == 'idac_variant1':
+    if FLAGS.model == 'idac_v1':
 
         from stable_baselines.idac.policy_idac import MlpPolicy as policy
         from stable_baselines.idac.idac_variant1 import IDAC as Model
 
 
         cwd = os.getcwd()
-        log_dir = cwd + '/env_log/' + env_name + '/distribution_idac'
+        log_dir = cwd + '/env_log/' + env_name + '/distribution_idac_v1'
         os.makedirs(log_dir, exist_ok=True)
 
         noise_dim = 5
@@ -115,8 +115,8 @@ def main(argv):
         file_name = String +'_score.txt'
         f = open(file_name, "w+")
 
-        dis_log_dir = cwd + '/dis_log/' + env_name + '/idac'
-        rew_log_dir = cwd + '/rew_log/' + env_name + '/idac'
+        dis_log_dir = cwd + '/dis_log/' + env_name + '/idac_v1'
+        rew_log_dir = cwd + '/rew_log/' + env_name + '/idac_v1'
         os.makedirs(dis_log_dir, exist_ok=True)
         os.makedirs(rew_log_dir, exist_ok=True)
         dis_eval_file = dis_log_dir + '/Seed_' + str(seed)
