@@ -199,7 +199,7 @@ class IDAC(OffPolicyRLModel):
                     deterministic_action, policy_out_, logp_pi, _, _, _ = self.policy_tf.make_actor(self.processed_obs_ph, self.noises_ph)
 
                     logp_pi = tf.reshape(logp_pi,(-1,1))
-                    logp_pi = tf.gather(logp_pi, self.idx_ph_J)
+                    logp_pi = tf.gather(logp_pi, self.idx_ph)
                     self.deterministic_action = deterministic_action
 
                     self.entropy = tf.reduce_mean(self.policy_tf.entropy)
@@ -421,13 +421,13 @@ class IDAC(OffPolicyRLModel):
         idx_J = np.copy(idx)
 
         for i_tmp in range(1,self.J):
-            new_idx = np.arange(i_tmp, self.batch_size*(self.L+self.J), self.L+self.J)
+            new_idx = np.arange(i_tmp, self.batch_size*(self.J), self.J)
             idx_J = np.concatenate([idx_J, new_idx])
 
         idx_J = np.sort(idx_J)
 
         for i_tmp in range(1,self.noise_num):
-            new_idx = np.arange(i_tmp, self.batch_size*(self.L+self.J), (self.L+self.J))
+            new_idx = np.arange(i_tmp, self.batch_size*(self.J), (self.J))
             idx_K = np.concatenate([idx_K, new_idx])
 
         idx_K = np.sort(idx_K)
