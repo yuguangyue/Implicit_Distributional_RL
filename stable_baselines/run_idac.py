@@ -101,20 +101,7 @@ def main(argv):
 
         from stable_baselines.idac.policy_idac import MlpPolicy as policy
         from stable_baselines.idac.idac_variant1 import IDAC as Model
-
-
         cwd = os.getcwd()
-        log_dir = cwd + '/env_log/' + env_name + '/distribution_idac_v1'
-        os.makedirs(log_dir, exist_ok=True)
-
-        noise_dim = 5
-        noise_num = 21
-
-        String = log_dir + '/Seed_' + str(seed) + '_Noisedim_' + str(noise_dim)
-
-        file_name = String +'_score.txt'
-        f = open(file_name, "w+")
-
         dis_log_dir = cwd + '/dis_log/' + env_name + '/idac_v1'
         rew_log_dir = cwd + '/rew_log/' + env_name + '/idac_v1'
         os.makedirs(dis_log_dir, exist_ok=True)
