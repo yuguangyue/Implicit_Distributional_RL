@@ -61,7 +61,7 @@ def main(argv):
 
     lr = 3e-4
 
-    J = 21
+    J = 51
     L = 21
     noise_num = 51 # the same as K
 
