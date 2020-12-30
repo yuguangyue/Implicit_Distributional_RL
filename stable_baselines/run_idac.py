@@ -61,6 +61,10 @@ def main(argv):
 
     lr = 3e-4
 
+    J = 21
+    L = 21
+    noise_num = 51 # the same as K
+
     set_global_seeds(seed)
 
     if FLAGS.model == 'idac':
@@ -70,32 +74,23 @@ def main(argv):
 
 
         cwd = os.getcwd()
-        log_dir = cwd + '/env_log/' + env_name + '/distribution_idac'
-        os.makedirs(log_dir, exist_ok=True)
-
-        noise_dim = 5
-        noise_num = 21
-
-        String = log_dir + '/Seed_' + str(seed) + '_Noisedim_' + str(noise_dim)
-
-        file_name = String +'_score.txt'
-        f = open(file_name, "w+")
-
         dis_log_dir = cwd + '/dis_log/' + env_name + '/idac'
         rew_log_dir = cwd + '/rew_log/' + env_name + '/idac'
         os.makedirs(dis_log_dir, exist_ok=True)
         os.makedirs(rew_log_dir, exist_ok=True)
-        dis_eval_file = dis_log_dir + '/Seed_' + str(seed)
-        rew_eval_file = rew_log_dir + '/Seed_' + str(seed)
-        dis_eval_interval = int(total_timesteps/500)
+        dis_eval_file = dis_log_dir + '/Seed_' + str(seed)\
+            + '_L_' + str(L) + '_J_' + str(J) + '_K_' + str(noise_num) + '.txt'
+        rew_eval_file = rew_log_dir + '/Seed_' + str(seed)\
+            + '_L_' + str(L) + '_J_' + str(J) + '_K_' + str(noise_num) + '.txt'
 
 
-        model = Model(policy, env,  noise_dim=noise_dim, buffer_size=int(1e6),
+        model = Model(policy, env,  buffer_size=int(1e6),
                     verbose=2, batch_size=256, learning_rate=lr, gradient_steps=1, 
-                    target_update_interval=1, policy_kwargs=policy_kwargs)
+                    target_update_interval=1, policy_kwargs=policy_kwargs,
+                    noise_num=noise_num, J=J, L=L)
 
         model.learn(total_timesteps=total_timesteps, env_eval=eval_env, score_path=rew_eval_file, dis_path=dis_eval_file,
-                    log_interval=1, seed=seed, path=file_name)
+                    log_interval=1, seed=seed)
 
     if FLAGS.model == 'idac_v1':
 
@@ -106,16 +101,18 @@ def main(argv):
         rew_log_dir = cwd + '/rew_log/' + env_name + '/idac_v1'
         os.makedirs(dis_log_dir, exist_ok=True)
         os.makedirs(rew_log_dir, exist_ok=True)
-        dis_eval_file = dis_log_dir + '/Seed_' + str(seed)
-        rew_eval_file = rew_log_dir + '/Seed_' + str(seed)
-        dis_eval_interval = int(total_timesteps/500)
+        dis_eval_file = dis_log_dir + '/Seed_' + str(seed)\
+            + '_L_' + str(L) + '_J_' + str(J) + '_K_' + str(noise_num) + '.txt'
+        rew_eval_file = rew_log_dir + '/Seed_' + str(seed)\
+            + '_L_' + str(L) + '_J_' + str(J) + '_K_' + str(noise_num) + '.txt'
 
 
-        model = Model(policy, env,  noise_dim=noise_dim, buffer_size=int(1e6),
+        model = Model(policy, env, buffer_size=int(1e6),
                     verbose=2, batch_size=256, learning_rate=lr, gradient_steps=1, 
-                    target_update_interval=1, policy_kwargs=policy_kwargs)
+                    target_update_interval=1, policy_kwargs=policy_kwargs,
+                    noise_num=noise_num, J=J)
 
         model.learn(total_timesteps=total_timesteps, env_eval=eval_env, score_path=rew_eval_file, dis_path=dis_eval_file,
-                    log_interval=1, seed=seed, path=file_name)
+                    log_interval=1, seed=seed)
 if __name__ == '__main__':
     app.run(main)

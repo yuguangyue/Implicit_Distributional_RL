@@ -695,18 +695,10 @@ class IDAC(OffPolicyRLModel):
                     fps = int(step / (time.time() - start_time))
                     logger.logkv("episodes", num_episodes)
                     logger.logkv("mean 100 episode reward", mean_reward)
-                    with open(path,'a') as f1:
-                        f1.write("%f " % step)
-                        f1.write("%f " % mean_reward)
                     if len(ep_info_buf) > 0 and len(ep_info_buf[0]) > 0:
                         logger.logkv('ep_rewmean', safe_mean([ep_info['r'] for ep_info in ep_info_buf]))
                         logger.logkv('eplenmean', safe_mean([ep_info['l'] for ep_info in ep_info_buf]))
-                        with open(path,'a') as f1:
-                            f1.write("%f " % safe_mean([ep_info['r'] for ep_info in ep_info_buf]))
-                            f1.write("%f " % safe_mean([ep_info['l'] for ep_info in ep_info_buf]))
-                    logger.logkv("n_updates", n_updates)
-                    with open(path,'a') as f1:
-                        f1.write("%f " % n_updates)                    
+                    logger.logkv("n_updates", n_updates)               
                     logger.logkv("current_lr", current_lr)
                     logger.logkv("fps", fps)
                     logger.logkv('time_elapsed', int(time.time() - start_time))
