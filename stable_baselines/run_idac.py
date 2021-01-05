@@ -33,7 +33,8 @@ flags.DEFINE_integer('seed', 0, "seed to run")
 flags.DEFINE_enum('mode', 'train', ['debug', 'train'], "running mode")
 flags.DEFINE_enum('model', None, 
                   ['idac',\
-                   'idac_v1'], "model to train")
+                   'idac_v1',\
+                   'idac_v2'], "model to train")
 FLAGS = flags.FLAGS
 def main(argv):
 
@@ -97,8 +98,8 @@ def main(argv):
         from stable_baselines.idac.policy_idac import MlpPolicy as policy
         from stable_baselines.idac.idac_variant1 import IDAC as Model
         cwd = os.getcwd()
-        dis_log_dir = cwd + '/dis_log/' + env_name + '/idac_v1'
-        rew_log_dir = cwd + '/rew_log/' + env_name + '/idac_v1'
+        dis_log_dir = cwd + '/dis_log/' + env_name + '/' + FLAGS.model
+        rew_log_dir = cwd + '/rew_log/' + env_name + '/' + FLAGS.model
         os.makedirs(dis_log_dir, exist_ok=True)
         os.makedirs(rew_log_dir, exist_ok=True)
         dis_eval_file = dis_log_dir + '/Seed_' + str(seed)\
@@ -114,5 +115,28 @@ def main(argv):
 
         model.learn(total_timesteps=total_timesteps, env_eval=eval_env, score_path=rew_eval_file, dis_path=dis_eval_file,
                     log_interval=1, seed=seed)
+
+    if FLAGS.model == 'idac_v2':
+
+        from stable_baselines.idac.policy_idac import MlpPolicy as policy
+        from stable_baselines.idac.idac_variant2 import IDAC as Model
+        cwd = os.getcwd()
+        dis_log_dir = cwd + '/dis_log/' + env_name + '/' + FLAGS.model
+        rew_log_dir = cwd + '/rew_log/' + env_name + '/' + FLAGS.model
+        os.makedirs(dis_log_dir, exist_ok=True)
+        os.makedirs(rew_log_dir, exist_ok=True)
+        dis_eval_file = dis_log_dir + '/Seed_' + str(seed)\
+            + '_K_' + str(noise_num) + '.txt'
+        rew_eval_file = rew_log_dir + '/Seed_' + str(seed)\
+            + '_K_' + str(noise_num) + '.txt'
+
+
+        model = Model(policy, env, buffer_size=int(1e6),
+                    verbose=2, batch_size=256, learning_rate=lr, gradient_steps=1, 
+                    target_update_interval=1, policy_kwargs=policy_kwargs,
+                    noise_num=noise_num)
+
+        model.learn(total_timesteps=total_timesteps, env_eval=eval_env, score_path=rew_eval_file, dis_path=dis_eval_file,
+                    log_interval=1, seed=seed)                    
 if __name__ == '__main__':
     app.run(main)
